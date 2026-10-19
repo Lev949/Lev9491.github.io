@@ -185,7 +185,8 @@ h1 {
 
 .trainer-card,
 .flashcard-wrap,
-.game-card {
+.game-card,
+.vocab-card {
   background: rgba(255, 255, 255, 0.9);
   border-radius: 28px;
   box-shadow: var(--shadow);
@@ -196,6 +197,26 @@ h1 {
   max-width: 760px;
   margin: 0 auto;
   padding: 30px 24px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.settings-row label {
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.settings-row select {
+  padding: 10px 14px;
+  border: 2px solid rgba(79, 70, 229, 0.12);
+  border-radius: 12px;
+  font-size: 1rem;
 }
 
 .task-wrap {
@@ -236,7 +257,9 @@ h1 {
   outline: none;
 }
 
-#answer:focus {
+#answer:focus,
+#englishWord:focus,
+#germanWord:focus {
   border-color: var(--primary);
 }
 
@@ -329,26 +352,73 @@ h1 {
   flex-wrap: wrap;
 }
 
-.game-grid {
+.vocab-layout {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 0.85fr 1.15fr;
   gap: 24px;
 }
 
-.game-card {
-  padding: 24px 20px;
-  min-height: 180px;
-  background: linear-gradient(180deg, #ffffff 0%, #f5f7ff 100%);
+.vocab-card {
+  padding: 22px;
 }
 
-.game-card h3 {
-  margin-top: 0;
+#vocabForm {
+  display: grid;
+  gap: 16px;
+}
+
+#vocabForm label {
+  display: grid;
+  gap: 8px;
+  font-weight: 700;
   color: var(--primary-dark);
 }
 
-.game-card p {
-  line-height: 1.7;
+#englishWord,
+#germanWord {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(79, 70, 229, 0.12);
+  font-size: 1rem;
+}
+
+.small-message {
+  min-height: 22px;
+  margin: 12px 0 0;
   color: var(--muted);
+}
+
+.saved-list-wrap {
+  margin-top: 18px;
+}
+
+.saved-list-wrap h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: var(--primary-dark);
+}
+
+.saved-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.saved-list li {
+  background: #f3f6ff;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.saved-list li span:last-child {
+  color: var(--primary-dark);
 }
 
 .footer {
@@ -366,7 +436,7 @@ h1 {
 
 @media (max-width: 760px) {
   .hero-grid,
-  .game-grid {
+  .vocab-layout {
     grid-template-columns: 1fr;
   }
 

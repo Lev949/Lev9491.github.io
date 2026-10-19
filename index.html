@@ -6,7 +6,7 @@
     <title>MiniLernBox</title>
     <meta
       name="description"
-      content="Lerne das 1x1, übe mit Lernkarten und trainiere deinen Fokus."
+      content="Lerne das 1x1, Wiederhole Vokabeln und trainiere mit Karteikarten."
     />
     <link rel="stylesheet" href="style.css" />
   </head>
@@ -17,7 +17,7 @@
         <nav>
           <a href="#trainer">1x1</a>
           <a href="#karten">Karteikarten</a>
-          <a href="#mini-spiele">Mini-Spiele</a>
+          <a href="#vokabeln">Vokabeln</a>
         </nav>
       </div>
     </header>
@@ -27,14 +27,14 @@
         <div class="container hero-grid">
           <div>
             <p class="eyebrow">Lernen macht Spaß</p>
-            <h1>Das 1x1 lernen – einfach, schnell und motivierend.</h1>
+            <h1>Das 1x1 und Vokabeln flexibel lernen.</h1>
             <p class="lead">
-              Übe mit Aufgaben, entdecke Lernkarten und baue dir Schritt für Schritt
-              Sicherheit im Rechnen auf.
+              Wähle deine 1x1-Reihe, trainiere gemischt und sammle Englisch-Wörter,
+              die direkt im Browser gespeichert werden.
             </p>
             <div class="cta-row">
               <a href="#trainer" class="btn primary">Jetzt üben</a>
-              <a href="#karten" class="btn secondary">Karteikarten</a>
+              <a href="#vokabeln" class="btn secondary">Vokabeln</a>
             </div>
           </div>
           <div class="hero-panel">
@@ -58,10 +58,27 @@
         <div class="container">
           <div class="section-heading">
             <p class="eyebrow">1x1 Trainer</p>
-            <h2>Rechne die Aufgabe aus</h2>
+            <h2>Wähle eine Reihe oder gemischtes Üben</h2>
           </div>
 
           <div class="trainer-card">
+            <div class="settings-row">
+              <label for="tableSelect">1x1-Reihe</label>
+              <select id="tableSelect">
+                <option value="all">Gemischt</option>
+                <option value="1">1er-Reihe</option>
+                <option value="2">2er-Reihe</option>
+                <option value="3">3er-Reihe</option>
+                <option value="4">4er-Reihe</option>
+                <option value="5">5er-Reihe</option>
+                <option value="6">6er-Reihe</option>
+                <option value="7">7er-Reihe</option>
+                <option value="8">8er-Reihe</option>
+                <option value="9">9er-Reihe</option>
+                <option value="10">10er-Reihe</option>
+              </select>
+            </div>
+
             <div class="task-wrap">
               <span class="task-label">Aufgabe</span>
               <div id="task" class="task">7 × 8 = ?</div>
@@ -113,25 +130,50 @@
         </div>
       </section>
 
-      <section id="mini-spiele" class="section">
+      <section id="vokabeln" class="section">
         <div class="container">
           <div class="section-heading">
-            <p class="eyebrow">Mini-Spiele</p>
-            <h2>Zusätzliches Training</h2>
+            <p class="eyebrow">Englisch Vokabeln</p>
+            <h2>Wörter hinzufügen und speichern</h2>
           </div>
 
-          <div class="game-grid">
-            <div class="game-card">
-              <h3>Rechne schnell</h3>
-              <p>Schaffst du 10 Aufgaben in einer Minute?</p>
+          <div class="vocab-layout">
+            <div class="vocab-card form-card">
+              <form id="vocabForm">
+                <label>
+                  Englisch
+                  <input id="englishWord" type="text" placeholder="example" required />
+                </label>
+                <label>
+                  Deutsch
+                  <input id="germanWord" type="text" placeholder="Beispiel" required />
+                </label>
+                <button type="submit" class="btn primary">Speichern</button>
+              </form>
+              <p id="vocabMessage" class="small-message"></p>
             </div>
-            <div class="game-card">
-              <h3>Merkkarten</h3>
-              <p>Wiederhole Begriffe, Fakten und kleine Aufgaben.</p>
-            </div>
-            <div class="game-card">
-              <h3>Motivation</h3>
-              <p>Ein kleiner Erfolg nach dem anderen macht dich stärker.</p>
+
+            <div class="vocab-card deck-card">
+              <div class="flashcard vocab-flashcard" id="vocabFlashcard">
+                <div class="card-front">
+                  <p class="card-tag">Englisch</p>
+                  <h3 id="vocabFront">apple</h3>
+                </div>
+                <div class="card-back">
+                  <p class="card-tag">Deutsch</p>
+                  <h3 id="vocabBack">Apfel</h3>
+                </div>
+              </div>
+
+              <div class="card-controls">
+                <button id="vocabFlipBtn" class="btn primary">Umdrehen</button>
+                <button id="vocabNextBtn" class="btn secondary">Nächstes Wort</button>
+              </div>
+
+              <div class="saved-list-wrap">
+                <h3>Gespeicherte Wörter</h3>
+                <ul id="vocabList" class="saved-list"></ul>
+              </div>
             </div>
           </div>
         </div>

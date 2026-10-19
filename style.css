@@ -12,6 +12,20 @@
   --shadow: 0 18px 45px rgba(79, 70, 229, 0.12);
 }
 
+body.dark-mode {
+  --bg: #0f172a;
+  --card: #111827;
+  --card-2: #1f2937;
+  --primary: #8b5cf6;
+  --primary-dark: #c4b5fd;
+  --accent: #fbbf24;
+  --success: #34d399;
+  --danger: #f87171;
+  --text: #f3f4f6;
+  --muted: #cbd5e1;
+  --shadow: 0 18px 45px rgba(15, 23, 42, 0.45);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -23,8 +37,13 @@ html {
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(180deg, #eef2ff 0%, #f8fbff 100%);
+  background: linear-gradient(180deg, var(--bg) 0%, #f8fbff 100%);
   color: var(--text);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+body.dark-mode {
+  background: linear-gradient(180deg, var(--bg) 0%, #020817 100%);
 }
 
 a {
@@ -45,11 +64,17 @@ a {
   border-bottom: 1px solid rgba(79, 70, 229, 0.08);
 }
 
+body.dark-mode .topbar {
+  background: rgba(15, 23, 42, 0.8);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+}
+
 .nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   min-height: 72px;
+  gap: 16px;
 }
 
 .brand {
@@ -62,11 +87,24 @@ a {
 nav {
   display: flex;
   gap: 18px;
+  flex: 1;
 }
 
 nav a {
   color: var(--text);
   font-weight: 600;
+}
+
+.theme-btn {
+  border: none;
+  background: var(--card-2);
+  color: var(--primary-dark);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
 }
 
 .hero {
@@ -146,11 +184,23 @@ h1 {
   padding: 22px;
 }
 
+body.dark-mode .hero-panel,
+body.dark-mode .trainer-card,
+body.dark-mode .flashcard-wrap,
+body.dark-mode .vocab-card,
+body.dark-mode .game-card {
+  background: rgba(17, 24, 39, 0.9);
+}
+
 .stat {
   background: linear-gradient(180deg, #f8faff 0%, #eef2ff 100%);
   border-radius: 18px;
   padding: 20px 12px;
   text-align: center;
+}
+
+body.dark-mode .stat {
+  background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
 }
 
 .value {
@@ -217,6 +267,8 @@ h1 {
   border: 2px solid rgba(79, 70, 229, 0.12);
   border-radius: 12px;
   font-size: 1rem;
+  background: var(--card);
+  color: var(--text);
 }
 
 .task-wrap {
@@ -255,6 +307,8 @@ h1 {
   border: 2px solid rgba(79, 70, 229, 0.12);
   font-size: 1.1rem;
   outline: none;
+  background: var(--card);
+  color: var(--text);
 }
 
 #answer:focus,
@@ -313,6 +367,11 @@ h1 {
   text-align: center;
   transition: transform 0.6s ease;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+body.dark-mode .card-front,
+body.dark-mode .card-back {
+  background: linear-gradient(135deg, #1f2937 0%, #0f172a 100%);
 }
 
 .card-back {
@@ -380,6 +439,8 @@ h1 {
   border-radius: 12px;
   border: 2px solid rgba(79, 70, 229, 0.12);
   font-size: 1rem;
+  background: var(--card);
+  color: var(--text);
 }
 
 .small-message {
@@ -415,6 +476,10 @@ h1 {
   gap: 8px;
   color: var(--text);
   font-weight: 600;
+}
+
+body.dark-mode .saved-list li {
+  background: #111827;
 }
 
 .saved-list li span:last-child {

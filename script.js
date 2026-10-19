@@ -24,8 +24,10 @@ const vocabFront = document.getElementById('vocabFront');
 const vocabBack = document.getElementById('vocabBack');
 const vocabFlipBtn = document.getElementById('vocabFlipBtn');
 const vocabNextBtn = document.getElementById('vocabNextBtn');
+const themeToggle = document.getElementById('themeToggle');
 
 const STORAGE_KEY = 'miniLernBoxVocab';
+const THEME_KEY = 'miniLernBoxTheme';
 
 let currentTask = null;
 let score = 0;
@@ -233,8 +235,27 @@ vocabNextBtn.addEventListener('click', () => {
   showVocabCard();
 });
 
+function applyTheme(theme) {
+  const isDark = theme === 'dark';
+  document.body.classList.toggle('dark-mode', isDark);
+  themeToggle.textContent = isDark ? '☀️' : '🌙';
+  themeToggle.setAttribute('aria-label', isDark ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren');
+  localStorage.setItem(THEME_KEY, theme);
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+  applyTheme(savedTheme);
+}
+
+themeToggle.addEventListener('click', () => {
+  const isDark = document.body.classList.contains('dark-mode');
+  applyTheme(isDark ? 'light' : 'dark');
+});
+
 updateStats();
 renderVocabList();
 showVocabCard();
 generateTask();
 showRandomCard();
+initTheme();

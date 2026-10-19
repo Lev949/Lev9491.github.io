@@ -4,6 +4,7 @@ const feedbackEl = document.getElementById('feedback');
 const checkBtn = document.getElementById('checkBtn');
 const nextBtn = document.getElementById('nextBtn');
 const tableSelect = document.getElementById('tableSelect');
+const flashcardTableSelect = document.getElementById('flashcardTableSelect');
 const statScoreEl = document.getElementById('stat-score');
 const statStreakEl = document.getElementById('stat-streak');
 const statLevelEl = document.getElementById('stat-level');
@@ -35,25 +36,47 @@ let streak = 0;
 let level = 1;
 let vocabList = loadVocab();
 let vocabIndex = 0;
+let flashcards = [];
+let flashcardIndex = 0;
 
-const flashcards = [
-  { front: 'Was ist 3 × 4?', back: '12' },
-  { front: 'Was ist 7 × 6?', back: '42' },
-  { front: 'Was ist 8 × 8?', back: '64' },
-  { front: 'Was ist 9 × 5?', back: '45' },
-  { front: 'Was ist 2 × 9?', back: '18' },
-  { front: 'Was ist 6 × 7?', back: '42' },
-  { front: 'Was ist 5 × 5?', back: '25' },
-  { front: 'Was ist 4 × 9?', back: '36' }
-];
+function buildFlashcardSet(tableValue) {
+  const cards = [];
 
-let cardIndex = 0;
-function showRandomCard() {
-  cardIndex = (cardIndex + 1) % flashcards.length;
-  const card = flashcards[cardIndex];
-  cardFrontText.textContent = card.front;
-  cardBackText.textContent = card.back;
+  if (tableValue === 'all') {
+    for (let a = 1; a <= 10; a += 1) {
+      for (let b = 1; b <= 10; b += 1) {
+        cards.push({ front: `Was ist ${a} × ${b}?`, back: String(a * b) });
+      }
+    }
+    return cards;
+  }
+
+  const table = Number(tableValue);
+  for (let i = 1; i <= 10; i += 1) {
+    cards.push({ front: `Was ist ${table} × ${i}?`, back: String(table * i) });
+  }
+
+  return cards;
+}
+
+function updateFlashcardDisplay() {
+  if (!flashcards.length) {
+    cardFrontText.textContent = 'Keine Karte';
+    cardBackText.textContent = '—';
+    flashcardEl.classList.remove('flipped');
+    return;
+  }
+
+  const current = flashcards[flashcardIndex % flashcards.length];
+  cardFrontText.textContent = current.front;
+  cardBackText.textContent = current.back;
   flashcardEl.classList.remove('flipped');
+}
+
+function updateFlashcardsForSelectedTable() {
+  flashcards = buildFlashcardSet(flashcardTableSelect.value);
+  flashcardIndex = 0;
+  updateFlashcardDisplay();
 }
 
 function updateStats() {
@@ -131,6 +154,10 @@ tableSelect.addEventListener('change', () => {
   generateTask();
 });
 
+flashcardTableSelect.addEventListener('change', () => {
+  updateFlashcardsForSelectedTable();
+});
+
 answerInput.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
     checkAnswer();
@@ -143,7 +170,11 @@ flipBtn.addEventListener('click', () => {
 });
 
 nextCardBtn.addEventListener('click', () => {
-  showRandomCard();
+  if (!flashcards.length) {
+    return;
+  }
+  flashcardIndex = (flashcardIndex + 1) % flashcards.length;
+  updateFlashcardDisplay();
 });
 
 function loadVocab() {
@@ -253,9 +284,9 @@ themeToggle.addEventListener('click', () => {
   applyTheme(isDark ? 'light' : 'dark');
 });
 
+updateFlashcardsForSelectedTable();
 updateStats();
 renderVocabList();
 showVocabCard();
 generateTask();
-showRandomCard();
 initTheme();

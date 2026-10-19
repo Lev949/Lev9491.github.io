@@ -59,7 +59,6 @@ function safeLoadVocab() {
         { english: 'school', german: 'Schule' }
       ];
     }
-
     const parsed = JSON.parse(stored);
     return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
@@ -76,21 +75,18 @@ function buildFlashcardSet(tableValue) {
         cards.push({ front: `Was ist ${a} × ${b}?`, back: String(a * b) });
       }
     }
-    return shuffleArray(cards);
-  }
-
-  const table = Number(tableValue);
-  for (let i = 1; i <= 10; i += 1) {
-    cards.push({ front: `Was ist ${table} × ${i}?`, back: String(table * i) });
+  } else {
+    const table = Number(tableValue);
+    for (let i = 1; i <= 10; i += 1) {
+      cards.push({ front: `Was ist ${table} × ${i}?`, back: String(table * i) });
+    }
   }
 
   return shuffleArray(cards);
 }
 
 function updateFlashcardDisplay() {
-  if (!flashcardEl || !cardFrontText || !cardBackText) {
-    return;
-  }
+  if (!flashcardEl || !cardFrontText || !cardBackText) return;
 
   if (!flashcards.length) {
     cardFrontText.textContent = 'Keine Karte';
@@ -106,12 +102,22 @@ function updateFlashcardDisplay() {
 }
 
 function updateFlashcardsForSelectedTable() {
-  if (!flashcardTableSelect) {
-    return;
-  }
-
+  if (!flashcardTableSelect) return;
   flashcards = buildFlashcardSet(flashcardTableSelect.value);
   flashcardIndex = 0;
+  updateFlashcardDisplay();
+}
+
+function nextRandomCard() {
+  if (!flashcards.length) return;
+
+  if (flashcardIndex >= flashcards.length - 1) {
+    flashcards = shuffleArray(flashcards);
+    flashcardIndex = 0;
+  } else {
+    flashcardIndex += 1;
+  }
+
   updateFlashcardDisplay();
 }
 
@@ -281,9 +287,7 @@ function bindEvents() {
 
   if (nextCardBtn) {
     nextCardBtn.addEventListener('click', () => {
-      if (!flashcards.length) return;
-      flashcardIndex = (flashcardIndex + 1) % flashcards.length;
-      updateFlashcardDisplay();
+      nextRandomCard();
     });
   }
 

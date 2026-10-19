@@ -79,16 +79,21 @@ function buildFlashcardSet(tableValue) {
 }
 
 function updateFlashcardDisplay() {
-  if (!flashcards.length || !cardFrontText || !cardBackText) {
+  if (!flashcardEl || !cardFrontText || !cardBackText) {
+    return;
+  }
+
+  if (!flashcards.length) {
+    cardFrontText.textContent = 'Keine Karte';
+    cardBackText.textContent = '—';
+    flashcardEl.classList.remove('flipped');
     return;
   }
 
   const current = flashcards[flashcardIndex % flashcards.length];
   cardFrontText.textContent = current.front;
   cardBackText.textContent = current.back;
-  if (flashcardEl) {
-    flashcardEl.classList.remove('flipped');
-  }
+  flashcardEl.classList.remove('flipped');
 }
 
 function updateFlashcardsForSelectedTable() {
@@ -141,8 +146,7 @@ function checkAnswer() {
     return;
   }
 
-  const userAnswer = Number(answerInput.value);
-  if (!answerInput || answerInput.value === '' || Number.isNaN(userAnswer)) {
+  if (!answerInput || answerInput.value === '' || Number.isNaN(Number(answerInput.value))) {
     if (feedbackEl) {
       feedbackEl.textContent = 'Bitte gib eine Zahl ein!';
       feedbackEl.classList.add('error');
@@ -150,6 +154,7 @@ function checkAnswer() {
     return;
   }
 
+  const userAnswer = Number(answerInput.value);
   if (userAnswer === currentTask.answer) {
     score += 10;
     streak += 1;
@@ -220,6 +225,7 @@ function saveVocab() {
 function applyTheme(theme) {
   const isDark = theme === 'dark';
   document.body.classList.toggle('dark-mode', isDark);
+  document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
 
   if (themeToggle) {
     themeToggle.textContent = isDark ? 'Hell' : 'Dunkel';
@@ -258,15 +264,19 @@ function bindEvents() {
     });
   }
 
-  if (flipBtn) flipBtn.addEventListener('click', () => {
-    if (flashcardEl) flashcardEl.classList.toggle('flipped');
-  });
+  if (flipBtn) {
+    flipBtn.addEventListener('click', () => {
+      if (flashcardEl) flashcardEl.classList.toggle('flipped');
+    });
+  }
 
-  if (nextCardBtn) nextCardBtn.addEventListener('click', () => {
-    if (!flashcards.length) return;
-    flashcardIndex = (flashcardIndex + 1) % flashcards.length;
-    updateFlashcardDisplay();
-  });
+  if (nextCardBtn) {
+    nextCardBtn.addEventListener('click', () => {
+      if (!flashcards.length) return;
+      flashcardIndex = (flashcardIndex + 1) % flashcards.length;
+      updateFlashcardDisplay();
+    });
+  }
 
   if (vocabForm) {
     vocabForm.addEventListener('submit', (event) => {
@@ -323,4 +333,8 @@ function initApp() {
   bindEvents();
 }
 
-initApp();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}

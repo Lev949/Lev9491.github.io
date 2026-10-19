@@ -34,10 +34,29 @@ let currentTask = null;
 let score = 0;
 let streak = 0;
 let level = 1;
-let vocabList = loadVocab();
+let vocabList = [];
 let vocabIndex = 0;
 let flashcards = [];
 let flashcardIndex = 0;
+
+function safeLoadVocab() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) {
+      return [
+        { english: 'apple', german: 'Apfel' },
+        { english: 'house', german: 'Haus' },
+        { english: 'book', german: 'Buch' },
+        { english: 'school', german: 'Schule' }
+      ];
+    }
+
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    return [];
+  }
+}
 
 function buildFlashcardSet(tableValue) {
   const cards = [];
@@ -60,33 +79,36 @@ function buildFlashcardSet(tableValue) {
 }
 
 function updateFlashcardDisplay() {
-  if (!flashcards.length) {
-    cardFrontText.textContent = 'Keine Karte';
-    cardBackText.textContent = '—';
-    flashcardEl.classList.remove('flipped');
+  if (!flashcards.length || !cardFrontText || !cardBackText) {
     return;
   }
 
   const current = flashcards[flashcardIndex % flashcards.length];
   cardFrontText.textContent = current.front;
   cardBackText.textContent = current.back;
-  flashcardEl.classList.remove('flipped');
+  if (flashcardEl) {
+    flashcardEl.classList.remove('flipped');
+  }
 }
 
 function updateFlashcardsForSelectedTable() {
+  if (!flashcardTableSelect) {
+    return;
+  }
+
   flashcards = buildFlashcardSet(flashcardTableSelect.value);
   flashcardIndex = 0;
   updateFlashcardDisplay();
 }
 
 function updateStats() {
-  statScoreEl.textContent = score;
-  statStreakEl.textContent = streak;
-  statLevelEl.textContent = level;
+  if (statScoreEl) statScoreEl.textContent = String(score);
+  if (statStreakEl) statStreakEl.textContent = String(streak);
+  if (statLevelEl) statLevelEl.textContent = String(level);
 }
 
 function getSelectedTable() {
-  return tableSelect.value;
+  return tableSelect ? tableSelect.value : 'all';
 }
 
 function generateTask() {
@@ -104,11 +126,13 @@ function generateTask() {
   }
 
   currentTask = { a: first, b: second, answer: first * second };
-  taskEl.textContent = `${first} × ${second} = ?`;
-  answerInput.value = '';
-  answerInput.focus();
-  feedbackEl.textContent = 'Bereit?';
-  feedbackEl.classList.remove('success', 'error');
+  if (taskEl) taskEl.textContent = `${first} × ${second} = ?`;
+  if (answerInput) answerInput.value = '';
+  if (answerInput) answerInput.focus();
+  if (feedbackEl) {
+    feedbackEl.textContent = 'Bereit?';
+    feedbackEl.classList.remove('success', 'error');
+  }
 }
 
 function checkAnswer() {
@@ -118,9 +142,11 @@ function checkAnswer() {
   }
 
   const userAnswer = Number(answerInput.value);
-  if (answerInput.value === '' || Number.isNaN(userAnswer)) {
-    feedbackEl.textContent = 'Bitte gib eine Zahl ein!';
-    feedbackEl.classList.add('error');
+  if (!answerInput || answerInput.value === '' || Number.isNaN(userAnswer)) {
+    if (feedbackEl) {
+      feedbackEl.textContent = 'Bitte gib eine Zahl ein!';
+      feedbackEl.classList.add('error');
+    }
     return;
   }
 
@@ -130,77 +156,24 @@ function checkAnswer() {
     if (streak > 0 && streak % 3 === 0) {
       level += 1;
     }
-    feedbackEl.textContent = 'Richtig! Super gemacht!';
-    feedbackEl.classList.add('success');
+    if (feedbackEl) {
+      feedbackEl.textContent = 'Richtig! Super gemacht!';
+      feedbackEl.classList.add('success');
+    }
   } else {
     score = Math.max(0, score - 2);
     streak = 0;
-    feedbackEl.textContent = `Leider falsch. Die richtige Antwort ist ${currentTask.answer}.`;
-    feedbackEl.classList.add('error');
+    if (feedbackEl) {
+      feedbackEl.textContent = `Leider falsch. Die richtige Antwort ist ${currentTask.answer}.`;
+      feedbackEl.classList.add('error');
+    }
   }
 
   updateStats();
 }
 
-checkBtn.addEventListener('click', () => {
-  checkAnswer();
-});
-
-nextBtn.addEventListener('click', () => {
-  generateTask();
-});
-
-tableSelect.addEventListener('change', () => {
-  generateTask();
-});
-
-flashcardTableSelect.addEventListener('change', () => {
-  updateFlashcardsForSelectedTable();
-});
-
-answerInput.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
-    checkAnswer();
-    setTimeout(generateTask, 800);
-  }
-});
-
-flipBtn.addEventListener('click', () => {
-  flashcardEl.classList.toggle('flipped');
-});
-
-nextCardBtn.addEventListener('click', () => {
-  if (!flashcards.length) {
-    return;
-  }
-  flashcardIndex = (flashcardIndex + 1) % flashcards.length;
-  updateFlashcardDisplay();
-});
-
-function loadVocab() {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) {
-    return [
-      { english: 'apple', german: 'Apfel' },
-      { english: 'house', german: 'Haus' },
-      { english: 'book', german: 'Buch' },
-      { english: 'school', german: 'Schule' }
-    ];
-  }
-
-  try {
-    const parsed = JSON.parse(stored);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (error) {
-    return [];
-  }
-}
-
-function saveVocab() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(vocabList));
-}
-
 function renderVocabList() {
+  if (!vocabListEl) return;
   vocabListEl.innerHTML = '';
 
   if (vocabList.length === 0) {
@@ -221,6 +194,8 @@ function renderVocabList() {
 }
 
 function showVocabCard() {
+  if (!vocabFlashcard || !vocabFront || !vocabBack) return;
+
   if (vocabList.length === 0) {
     vocabFront.textContent = 'Noch keine Wörter';
     vocabBack.textContent = 'Bitte füge welche hinzu';
@@ -234,59 +209,118 @@ function showVocabCard() {
   vocabFlashcard.classList.remove('flipped');
 }
 
-vocabForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-
-  const english = englishWordInput.value.trim();
-  const german = germanWordInput.value.trim();
-
-  if (!english || !german) {
-    vocabMessage.textContent = 'Bitte fülle beide Felder aus.';
-    return;
+function saveVocab() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(vocabList));
+  } catch (error) {
+    console.warn('Vokabeln konnten nicht gespeichert werden.', error);
   }
-
-  vocabList.push({ english, german });
-  saveVocab();
-  renderVocabList();
-  vocabIndex = vocabList.length - 1;
-  showVocabCard();
-  vocabForm.reset();
-  vocabMessage.textContent = 'Wort gespeichert!';
-});
-
-vocabFlipBtn.addEventListener('click', () => {
-  vocabFlashcard.classList.toggle('flipped');
-});
-
-vocabNextBtn.addEventListener('click', () => {
-  if (vocabList.length === 0) {
-    return;
-  }
-  vocabIndex = (vocabIndex + 1) % vocabList.length;
-  showVocabCard();
-});
+}
 
 function applyTheme(theme) {
   const isDark = theme === 'dark';
   document.body.classList.toggle('dark-mode', isDark);
-  themeToggle.textContent = isDark ? '☀️' : '🌙';
-  themeToggle.setAttribute('aria-label', isDark ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren');
-  localStorage.setItem(THEME_KEY, theme);
+
+  if (themeToggle) {
+    themeToggle.textContent = isDark ? 'Hell' : 'Dunkel';
+    themeToggle.setAttribute('aria-label', isDark ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren');
+    themeToggle.setAttribute('aria-pressed', String(isDark));
+  }
+
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch (error) {
+    console.warn('Theme konnte nicht gespeichert werden.', error);
+  }
 }
 
 function initTheme() {
-  const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
-  applyTheme(savedTheme);
+  try {
+    const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+    applyTheme(savedTheme);
+  } catch (error) {
+    applyTheme('light');
+  }
 }
 
-themeToggle.addEventListener('click', () => {
-  const isDark = document.body.classList.contains('dark-mode');
-  applyTheme(isDark ? 'light' : 'dark');
-});
+function bindEvents() {
+  if (checkBtn) checkBtn.addEventListener('click', checkAnswer);
+  if (nextBtn) nextBtn.addEventListener('click', generateTask);
+  if (tableSelect) tableSelect.addEventListener('change', generateTask);
+  if (flashcardTableSelect) flashcardTableSelect.addEventListener('change', updateFlashcardsForSelectedTable);
 
-updateFlashcardsForSelectedTable();
-updateStats();
-renderVocabList();
-showVocabCard();
-generateTask();
-initTheme();
+  if (answerInput) {
+    answerInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        checkAnswer();
+        setTimeout(generateTask, 800);
+      }
+    });
+  }
+
+  if (flipBtn) flipBtn.addEventListener('click', () => {
+    if (flashcardEl) flashcardEl.classList.toggle('flipped');
+  });
+
+  if (nextCardBtn) nextCardBtn.addEventListener('click', () => {
+    if (!flashcards.length) return;
+    flashcardIndex = (flashcardIndex + 1) % flashcards.length;
+    updateFlashcardDisplay();
+  });
+
+  if (vocabForm) {
+    vocabForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const english = englishWordInput.value.trim();
+      const german = germanWordInput.value.trim();
+
+      if (!english || !german) {
+        if (vocabMessage) vocabMessage.textContent = 'Bitte fülle beide Felder aus.';
+        return;
+      }
+
+      vocabList.push({ english, german });
+      saveVocab();
+      renderVocabList();
+      vocabIndex = vocabList.length - 1;
+      showVocabCard();
+      vocabForm.reset();
+      if (vocabMessage) vocabMessage.textContent = 'Wort gespeichert!';
+    });
+  }
+
+  if (vocabFlipBtn) {
+    vocabFlipBtn.addEventListener('click', () => {
+      if (vocabFlashcard) vocabFlashcard.classList.toggle('flipped');
+    });
+  }
+
+  if (vocabNextBtn) {
+    vocabNextBtn.addEventListener('click', () => {
+      if (vocabList.length === 0) return;
+      vocabIndex = (vocabIndex + 1) % vocabList.length;
+      showVocabCard();
+    });
+  }
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isDark = document.body.classList.contains('dark-mode');
+      applyTheme(isDark ? 'light' : 'dark');
+    });
+  }
+}
+
+function initApp() {
+  vocabList = safeLoadVocab();
+  renderVocabList();
+  showVocabCard();
+  updateFlashcardsForSelectedTable();
+  updateStats();
+  generateTask();
+  initTheme();
+  bindEvents();
+}
+
+initApp();

@@ -39,6 +39,15 @@ let vocabIndex = 0;
 let flashcards = [];
 let flashcardIndex = 0;
 
+function shuffleArray(items) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
 function safeLoadVocab() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -67,7 +76,7 @@ function buildFlashcardSet(tableValue) {
         cards.push({ front: `Was ist ${a} × ${b}?`, back: String(a * b) });
       }
     }
-    return cards;
+    return shuffleArray(cards);
   }
 
   const table = Number(tableValue);
@@ -75,7 +84,7 @@ function buildFlashcardSet(tableValue) {
     cards.push({ front: `Was ist ${table} × ${i}?`, back: String(table * i) });
   }
 
-  return cards;
+  return shuffleArray(cards);
 }
 
 function updateFlashcardDisplay() {

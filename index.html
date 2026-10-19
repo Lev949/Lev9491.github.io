@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MiniLernBox</title>
+    <meta
+      name="description"
+      content="Lerne das 1x1, übe mit Lernkarten und trainiere deinen Fokus."
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container nav">
+        <div class="brand">MiniLernBox</div>
+        <nav>
+          <a href="#trainer">1x1</a>
+          <a href="#karten">Karteikarten</a>
+          <a href="#mini-spiele">Mini-Spiele</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <p class="eyebrow">Lernen macht Spaß</p>
+            <h1>Das 1x1 lernen – einfach, schnell und motivierend.</h1>
+            <p class="lead">
+              Übe mit Aufgaben, entdecke Lernkarten und baue dir Schritt für Schritt
+              Sicherheit im Rechnen auf.
+            </p>
+            <div class="cta-row">
+              <a href="#trainer" class="btn primary">Jetzt üben</a>
+              <a href="#karten" class="btn secondary">Karteikarten</a>
+            </div>
+          </div>
+          <div class="hero-panel">
+            <div class="stat">
+              <span class="value" id="stat-score">0</span>
+              <span class="label">Punkte</span>
+            </div>
+            <div class="stat">
+              <span class="value" id="stat-streak">0</span>
+              <span class="label">Streak</span>
+            </div>
+            <div class="stat">
+              <span class="value" id="stat-level">1</span>
+              <span class="label">Level</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="trainer" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">1x1 Trainer</p>
+            <h2>Rechne die Aufgabe aus</h2>
+          </div>
+
+          <div class="trainer-card">
+            <div class="task-wrap">
+              <span class="task-label">Aufgabe</span>
+              <div id="task" class="task">7 × 8 = ?</div>
+            </div>
+
+            <div class="controls">
+              <input
+                id="answer"
+                type="number"
+                inputmode="numeric"
+                placeholder="Deine Antwort"
+                aria-label="Antwort eingeben"
+              />
+              <button id="checkBtn" class="btn primary">Prüfen</button>
+            </div>
+
+            <div class="feedback-row">
+              <p id="feedback" class="feedback">Bereit?</p>
+              <button id="nextBtn" class="btn secondary">Nächste Aufgabe</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="karten" class="section alt">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Karteikarten</p>
+            <h2>Lerne mit Karten</h2>
+          </div>
+
+          <div class="flashcard-wrap">
+            <div class="flashcard" id="flashcard">
+              <div class="card-front">
+                <p class="card-tag">Frage</p>
+                <h3 id="card-front-text">Was ist 6 × 7?</h3>
+              </div>
+              <div class="card-back">
+                <p class="card-tag">Antwort</p>
+                <h3 id="card-back-text">42</h3>
+              </div>
+            </div>
+
+            <div class="card-controls">
+              <button id="flipBtn" class="btn primary">Umdrehen</button>
+              <button id="nextCardBtn" class="btn secondary">Nächste Karte</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="mini-spiele" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Mini-Spiele</p>
+            <h2>Zusätzliches Training</h2>
+          </div>
+
+          <div class="game-grid">
+            <div class="game-card">
+              <h3>Rechne schnell</h3>
+              <p>Schaffst du 10 Aufgaben in einer Minute?</p>
+            </div>
+            <div class="game-card">
+              <h3>Merkkarten</h3>
+              <p>Wiederhole Begriffe, Fakten und kleine Aufgaben.</p>
+            </div>
+            <div class="game-card">
+              <h3>Motivation</h3>
+              <p>Ein kleiner Erfolg nach dem anderen macht dich stärker.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <span>MiniLernBox</span>
+        <span>Für Fokus, Übung und Spaß beim Lernen</span>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
